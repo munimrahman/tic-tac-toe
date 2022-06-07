@@ -42,19 +42,48 @@ class Game extends React.Component {
             xIsNext: !this.state.xIsNext
         })
     }
+    jumpTo = step => {
+        this.setState({
+            stepNumber: step,
+            xIsNext: step % 2 === 0
+        })
+    }
     render() {
         const history = this.state.history
         const current = history[this.state.stepNumber]
         const winner = calculateWinner(current.squares)
-        console.log(winner);
+        const moves = history.map((step, move) => {
+            const des = move ? 'Go To Move #' + move : 'Go To Game Start'
+            return (
+                <li key={move}>
+                    <button onClick={() => this.jumpTo(move)}>{des}</button>
+                </li>
+            )
+        })
+
+        let status = ''
+        if (winner) {
+            status = 'Winner: ' + winner;
+        } else {
+            status = 'Next Player ' + (this.state.xIsNext ? 'X' : 'O')
+        }
         return (
-            <div className='flex justify-center'>
+            <div className='flex flex-col sm:flex-row justify-center items-center'>
                 <div>
                     <h1 className='text-3xl my-3'>Tic Tac Toe</h1>
                     <Board
                         onClick={this.handleClick}
                         squares={current.squares}
                     />
+                </div>
+                <div className='my-12 mx-5'>
+                    <div>
+                        {status}
+
+                    </div>
+                    <ol>
+                        {moves}
+                    </ol>
                 </div>
             </div>
         );
